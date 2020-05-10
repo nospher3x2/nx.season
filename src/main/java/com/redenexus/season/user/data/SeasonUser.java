@@ -1,5 +1,6 @@
-package com.redenexus.season.user;
+package com.redenexus.season.user.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -14,16 +15,14 @@ import java.util.UUID;
  * @author oNospher
  **/
 @RequiredArgsConstructor
-@Getter
+@Getter @Setter
 public class SeasonUser {
 
     private final UUID uniqueId;
-
-    @Setter
-    private List<ItemStack> items;
+    private final List<ItemStack> items;
 
     public Integer getLimit() {
-        int limit = 0;
+        int limit = 1;
         for(int i = limit; i < 36; i++) {
             if(this.getPlayer().hasPermission("nxseason.nospher.limit." + i)) {
                 limit = i;

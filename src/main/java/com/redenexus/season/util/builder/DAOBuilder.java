@@ -25,7 +25,7 @@ public abstract class DAOBuilder<T> {
 
     public abstract void createTable();
 
-    public abstract void insert(T element) throws SQLException;
+    public abstract T insert(T element) throws SQLException;
 
     public abstract <K, V> void update(Parameters<K, V> keys, T element) throws SQLException;
 

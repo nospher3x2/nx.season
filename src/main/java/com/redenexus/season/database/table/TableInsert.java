@@ -26,7 +26,8 @@ public class TableInsert {
 
             long id = -1;
             try (val rs = ps.getGeneratedKeys()) {
-                if (rs.first()) id = rs.getLong(1);
+                if (rs.first())
+                    id = rs.getLong(1);
             }
             return new TableInsertResult(id);
         }
