@@ -1,4 +1,9 @@
 settings:
+  mysql:
+    host: 'localhost'
+    user: 'root'
+    password: 'root'
+    database: 'nxseason'
   general:
     collect: false # se tiver false o comando /temporada resgatar n vai funcionar
   blacklist:
