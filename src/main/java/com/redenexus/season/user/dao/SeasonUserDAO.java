@@ -73,6 +73,8 @@ public class SeasonUserDAO<U extends SeasonUser> extends DAOBuilder<U> {
             return (U) seasonUser;
         }
 
-        return null;
+        SeasonUser seasonUser = SeasonUserManager.toUser(row);
+        SeasonUserManager.getUsers().add(seasonUser);
+        return (U) seasonUser;
     }
 }

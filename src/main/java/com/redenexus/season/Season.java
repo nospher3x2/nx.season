@@ -1,5 +1,7 @@
 package com.redenexus.season;
 
+import com.redenexus.season.manager.StartManager;
+import com.redenexus.season.util.reflection.Reflection;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,6 +16,9 @@ public class Season extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        new Reflection(this);
+        new StartManager();
+        saveDefaultConfig();
     }
 
 }
