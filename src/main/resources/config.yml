@@ -1,0 +1,7 @@
+settings:
+  general:
+    collect: false # se tiver false o comando /temporada resgatar n vai funcionar
+  blacklist:
+    itens:
+      - MOB_SPAWNER
+      - DIAMOND
