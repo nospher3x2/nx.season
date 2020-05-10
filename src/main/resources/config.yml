@@ -1,9 +1,6 @@
 settings:
   general:
     collect: false # se tiver false o comando /temporada resgatar n vai funcionar
-  limit:
-    membro: # nxseason.nospher.membro - limite de 20 itens.
-      itemLimit: 20
   blacklist:
     itens:
       - MOB_SPAWNER
