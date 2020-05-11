@@ -6,6 +6,9 @@ import com.redenexus.season.util.inventory.InventoryBuilder;
 import com.redenexus.season.util.inventory.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+
+import java.sql.SQLException;
 
 /**
  * @author oNospher
@@ -28,9 +31,11 @@ public class SeasonSavedItemsInventory {
             ).name(
                     "§aColetar"
             ).lore(
-                    "§7Clique aqui para coletar todos os itens que você guardou para a próxima temporada.",
+                    "§7Clique aqui para coletar todos os itens",
+                    "§7que você guardou para a próxima temporada.",
                     "",
-                    "§c§l! §fCaso você seu inventário não tenha espaço, ele irá dropar os itens no chão."
+                    "§c§l! §fCaso você não tenha espaço no inventário,",
+                    "§fos itens serão dropados no chão."
             ).setConsumer(event -> {
                 Player player = (Player) event.getWhoClicked();
                 if(!Season.getInstance().canCollect()) {
@@ -40,15 +45,22 @@ public class SeasonSavedItemsInventory {
                     return;
                 }
                 user.getItems().forEach(itemStack -> {
-                    if(player.getInventory().firstEmpty() != 1) {
+                    if(SeasonSavedItemsInventory.checkSpaceInventory(player.getInventory()) <= 0) {
                         player.getLocation().getWorld().dropItemNaturally(player.getLocation(), itemStack);
                     } else {
                         player.getInventory().addItem(itemStack);
                     }
                 });
+                user.getItems().clear();
+                try {
+                    user.update();
+                } catch (SQLException exception) {
+                    exception.printStackTrace();
+                }
                 player.sendMessage(
                         "§eVocê resgatou todos os itens que você guardou para próxima temporada."
                 );
+                player.closeInventory();
             });
         } else {
             collect = new ItemBuilder(
@@ -56,13 +68,26 @@ public class SeasonSavedItemsInventory {
             ).name(
                     "§aVocê não pode coletar"
             ).lore(
-                    "§7Você só pode coletar esses items quando a nova temporada começar."
+                    "§7Você só pode coletar esses items",
+                    "§7quando a nova temporada começar."
             );
         }
 
-        inventory.setItem((6*9-5), collect);
+        collect.setEditable(false);
+
         inventory.setDesign("XXXXXXXXX", "XOOOOOOOX", "XOOOOOOOX", "XOOOOOOOX", "XOOOOOOOX", "XXXXXXXXX");
+        inventory.setItem((6*9-5), collect);
         inventory.setCancel(true);
         return inventory;
+    }
+
+    public static int checkSpaceInventory(Inventory inventory) {
+        int slot = 0;
+        for (int i = 0; i < inventory.getSize(); i++) {
+            if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
+                slot++;
+            }
+        }
+        return slot;
     }
 }

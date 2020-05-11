@@ -3,6 +3,7 @@ package com.redenexus.season.manager;
 import com.redenexus.season.Season;
 import com.redenexus.season.database.manager.MySQLManager;
 import com.redenexus.season.database.runnable.MySQLRefreshRunnable;
+import com.redenexus.season.user.dao.SeasonUserDAO;
 import com.redenexus.season.util.ClassGetter;
 import com.redenexus.season.util.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
@@ -20,6 +21,7 @@ public class StartManager {
         new MySQLManager();
         new CommandManager();
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(Season.getInstance(), new MySQLRefreshRunnable(), 0L, 20L * 60);
+        new SeasonUserDAO<>().createTable();
     }
 
 }

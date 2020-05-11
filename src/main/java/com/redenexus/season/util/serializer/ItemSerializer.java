@@ -97,6 +97,7 @@ public class ItemSerializer {
             // Read the serialized inventory
             for (int i = 0; i < size; i++) {
                 Object utf = dataInput.readObject();
+                int slot = dataInput.readInt();
                 if (utf != null) {
                     list.add(fromBase64((String) utf));
                 }

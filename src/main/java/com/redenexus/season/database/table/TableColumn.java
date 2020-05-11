@@ -7,7 +7,7 @@ public class TableColumn {
 
     public static final TableColumn
         ID = new TableColumn("INT NOT NULL"),
-        UUID = new TableColumn("VARCHAR(255) NOT NUL"),
+        UUID = new TableColumn("VARCHAR(255) NOT NULL"),
         STRING = new TableColumn("VARCHAR(255)"),
         BYTE = new TableColumn("TINYINT"),
         BOOLEAN = BYTE.clone(),

@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author oNospher
@@ -22,15 +21,18 @@ import java.util.UUID;
 @Getter @Setter
 public class SeasonUser {
 
-    private final UUID uniqueId;
+    private final String username;
     private final List<ItemStack> items;
 
     public void addItem(ItemStack itemStack) throws SQLException {
         items.add(itemStack);
+        this.update();
+    }
 
+    public void update() throws SQLException {
         Parameters<String, String> parameters = new Parameters<>(
                 "items",
-                ItemSerializer.toBase64List(items)
+                ItemSerializer.toBase64List(this.getItems())
         );
 
         new SeasonUserDAO<>()
@@ -38,12 +40,11 @@ public class SeasonUser {
                         parameters,
                         this
                 );
-
     }
 
     public Integer getLimit() {
-        int limit = 0;
-        for(int i = limit; i < 100; i++) {
+        int limit = 1;
+        for(int i = limit; i <= 27; i++) {
             if(this.getPlayer().hasPermission("nxseason.nospher.limit." + i)) {
                 limit = i;
             }
@@ -52,6 +53,6 @@ public class SeasonUser {
     }
 
     public Player getPlayer() {
-        return Bukkit.getPlayer(this.uniqueId);
+        return Bukkit.getPlayer(this.username);
     }
 }

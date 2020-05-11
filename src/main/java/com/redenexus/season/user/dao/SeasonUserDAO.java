@@ -1,71 +1,68 @@
 package com.redenexus.season.user.dao;
 
 import com.google.common.collect.Lists;
+import com.redenexus.season.database.MySQL;
 import com.redenexus.season.database.data.Parameters;
+import com.redenexus.season.database.manager.MySQLManager;
+import com.redenexus.season.database.table.Table;
 import com.redenexus.season.database.table.TableColumn;
 import com.redenexus.season.database.table.TableRow;
 import com.redenexus.season.user.data.SeasonUser;
 import com.redenexus.season.user.manager.SeasonUserManager;
-import com.redenexus.season.util.builder.DAOBuilder;
+import com.redenexus.season.util.serializer.ItemSerializer;
 
 import java.sql.SQLException;
-import java.util.UUID;
 
 /**
  * @author oNospher
  **/
-public class SeasonUserDAO<U extends SeasonUser> extends DAOBuilder<U> {
+public class SeasonUserDAO<U extends SeasonUser> {
 
-    @Override
-    public String getDatabaseName() {
-        return "general";
+    private Table table = new Table("season_collect");
+
+    public SeasonUserDAO() {
+        MySQL mySQL = MySQLManager.getMySQL("general");
+        Table.setDefaultConnection(mySQL.getConnection());
     }
 
-    @Override
-    public String getTableName() {
-        return "season_collect";
-    }
 
-    @Override
     public void createTable() {
-        table.addColumn("uuid", TableColumn.UUID);
-        table.addColumn("items", TableColumn.STRING);
+        table.addColumn("username", TableColumn.UUID);
+        table.addColumn("items", TableColumn.TEXT);
         table.create();
     }
 
-    @Override
     public U insert(U element) throws SQLException {
         table.insert(
-                "uuid",
+                "username",
                 "items"
         ).one(
-                element.getUniqueId(),
-                element.getItems()
+                element.getUsername(),
+                ItemSerializer.toBase64List(element.getItems())
         );
+
         return element;
     }
 
-    @Override
     public <K, V> void update(Parameters<K, V> keys, U element) throws SQLException {
         Integer affectedRows = table.update(
                 keys.getKey().toString()
         ).values(
                 keys.getValue().toString()
         ).where(
-                "uuid",
-                element.getUniqueId()
+                "username",
+                element.getUsername()
         ).execute();
 
         if (affectedRows <= 0) this.insert(element);
     }
 
-    @Override
-    public <K, V> U findOne(K key, V value) {
-        TableRow row = table.query().where((String) key, value).first();
+    public <K extends String, V> U find(K key, V value) {
+        TableRow row = table.query().where(key, value).first();
 
         if (row == null) {
             SeasonUser seasonUser = new SeasonUser(
-                    (UUID) value,
+                    value.toString(),
                     Lists.newArrayList()
             );
 
@@ -77,4 +74,5 @@ public class SeasonUserDAO<U extends SeasonUser> extends DAOBuilder<U> {
         SeasonUserManager.getUsers().add(seasonUser);
         return (U) seasonUser;
     }
+
 }

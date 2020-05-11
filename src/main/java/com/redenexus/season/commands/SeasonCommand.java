@@ -44,7 +44,7 @@ public class SeasonCommand extends Command {
         }
 
         Player player = (Player) commandSender;
-        SeasonUser user = SeasonUserManager.find(player.getUniqueId());
+        SeasonUser user = SeasonUserManager.find(player.getName());
 
         switch (args[0].toLowerCase()) {
             case "importar": {
@@ -85,6 +85,12 @@ public class SeasonCommand extends Command {
                 return true;
             }
             case "resgatar": {
+                if(user.getItems().isEmpty()) {
+                    commandSender.sendMessage(
+                            "§cVocê não tem items para resgatar."
+                    );
+                    return true;
+                }
                 SeasonSavedItemsInventory.getInventory(user).open(player);
             }
         }

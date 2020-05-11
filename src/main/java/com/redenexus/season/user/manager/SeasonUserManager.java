@@ -20,26 +20,21 @@ public class SeasonUserManager {
     @Getter
     private static List<SeasonUser> users = Lists.newArrayList();
 
-    public static SeasonUser find(UUID uuid) {
-        return users.stream()
+    public static SeasonUser find(String username) {
+        return users
+                .stream()
                 .filter(Objects::nonNull)
-                .filter(seasonUser -> seasonUser.getUniqueId().equals(uuid))
+                .filter(user -> user.getUsername().equalsIgnoreCase(username))
                 .findFirst()
-                .orElse(
-                        new SeasonUserDAO<>()
-                        .findOne(
-                                "uuid",
-                                uuid
-                        )
-                );
+                .orElse(new SeasonUserDAO<>().find("username", username));
     }
 
     public static SeasonUser toUser(TableRow row) {
-        List<ItemStack> items = ItemSerializer.fromBase64List(
-                row.getString("items")
-        );
+        String serializedItems = row.getString("items");
+        List<ItemStack> items = serializedItems.isEmpty() ? Lists.newArrayList() : ItemSerializer.fromBase64List(serializedItems);
+
         return new SeasonUser(
-                UUID.fromString(row.getString("uuid")),
+                row.getString("username"),
                 items
         );
     }
