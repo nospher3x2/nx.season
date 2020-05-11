@@ -5,8 +5,7 @@ settings:
     password: 'root'
     database: 'nxseason'
   general:
-    collect: false # se tiver false o comando /temporada resgatar n vai funcionar
-  blacklist:
-    itens:
+    collect: false # se tiver false o comando /temporada resgatar não vai funcionar e o /temporada coletar irá funcionar e assim vice-versa.
+    items_blacklist:
       - MOB_SPAWNER
       - DIAMOND
